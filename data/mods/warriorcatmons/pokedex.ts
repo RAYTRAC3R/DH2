@@ -19768,6 +19768,8 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
         baseStats: {hp: 52, atk: 65, def: 45, spa: 58, spd: 48, spe: 48},
         abilities: {0: "Justified", 1: "Blaze", H: ""},
         weightkg: 2.2,
+        evos: ["Fireheart"],
+        color: "Red",
     },
     fireheart: {
         num: -6002,
@@ -19776,6 +19778,8 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
         baseStats: {hp: 70, atk: 84, def: 56, spa: 68, spd: 66, spe: 64},
         abilities: {0: "Justified", 1: "Blaze", H: ""},
         weightkg: 4.5,
+        evos: ["Firestar"],
+        color: "Red",
     },
     firestar: {
         num: -6003,
@@ -19784,5 +19788,6 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
         baseStats: {hp: 92, atk: 111, def: 70, spa: 98, spd: 83, spe: 80},
         abilities: {0: "Justified", 1: "Blaze", H: "Victory Star"},
         weightkg: 4.5,
+        color: "Red",
     },
 };
