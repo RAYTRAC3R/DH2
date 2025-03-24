@@ -6038,4 +6038,16 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		isNonstandard: "Custom",
 		tier: "Illegal",
 	},
+    firepaw: {
+		isNonstandard: "Custom",
+		tier: "WCmon",
+	},
+    fireheart: {
+		isNonstandard: "Custom",
+		tier: "WCmon",
+	},
+    firestar: {
+		isNonstandard: "Custom",
+		tier: "WCmon",
+	},
 };
