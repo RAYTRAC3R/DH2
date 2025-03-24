@@ -6039,15 +6039,14 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		tier: "Illegal",
 	},
     firepaw: {
-		isNonstandard: "Custom",
-		tier: "WCmon",
+		tier: "LC",
 	},
     fireheart: {
-		isNonstandard: "Custom",
-		tier: "WCmon",
+		tier: "NFE",
 	},
     firestar: {
-		isNonstandard: "Custom",
-		tier: "WCmon",
+		tier: "OU",
+		doublesTier: "DOU",
+		natDexTier: "OU",
 	},
 };
