@@ -99706,6 +99706,9 @@ export const Learnsets: import('../sim/dex-species').LearnsetDataTable = {
 			gigaimpact: ["9M"],
 			growl: ["9M"],
 			hiddenpower: ["9M"],
+            honeclaws: ["9M"],
+			hyperbeam: ["9M"],
+			mysticalfire: ["9M"],
 		},
 	},
 };
