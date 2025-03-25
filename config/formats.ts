@@ -4382,7 +4382,7 @@ export const Formats: FormatList = [
 		name: "[Gen 9] Warrior Catmons",
 		mod: 'warriorcatmons',
 		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Species Clause', 'Terastal Clause', 'Sleep Clause Mod', 'Data Mod'],
-		banlist: ['ND Uber', 'ND AG'],
+		banlist: ['ND AG'],
 		teambuilderFormat: 'National Dex',
 	},
 	{
