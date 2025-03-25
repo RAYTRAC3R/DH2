@@ -6049,4 +6049,15 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		doublesTier: "DOU",
 		natDexTier: "OU",
 	},
+    graykit: {
+		tier: "LC",
+	},
+    graypaw: {
+		tier: "NFE",
+	},
+    graystripe: {
+		tier: "OU",
+		doublesTier: "DOU",
+		natDexTier: "OU",
+	},
 };
