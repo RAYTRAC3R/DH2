@@ -6042,12 +6042,14 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		tier: "LC",
 	},
     fireheart: {
-		tier: "NFE",
-	},
-    firestar: {
 		tier: "OU",
 		doublesTier: "DOU",
 		natDexTier: "OU",
+	},
+    firestar: {
+		tier: "Uber",
+		doublesTier: "DUber",
+		natDexTier: "Uber",
 	},
     graykit: {
 		tier: "LC",
@@ -6059,5 +6061,18 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		tier: "OU",
 		doublesTier: "DOU",
 		natDexTier: "OU",
+	},
+    tigerclawpaw: {
+		tier: "LC",
+	},
+    tigerclaw: {
+		tier: "OU",
+		doublesTier: "DOU",
+		natDexTier: "OU",
+	},
+    tigerclawstar: {
+		tier: "Uber",
+		doublesTier: "DUber",
+		natDexTier: "Uber",
 	},
 };
