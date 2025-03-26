@@ -956,7 +956,7 @@ export const Pokedex: {[k: string]: ModdedSpeciesData;} = {
 	},
 	blazikenmega: {
 		inherit: true,
-		baseStats: {hp: 80, atk: 130, def: 95, spa: 130, spd: 95, spe: 100},
+		baseStats: {hp: 80, atk: 140, def: 85, spa: 130, spd: 85, spe: 110},
 		abilities: {0: "Reckless"},
 	},
 	mightyena: {
@@ -3092,7 +3092,7 @@ export const Pokedex: {[k: string]: ModdedSpeciesData;} = {
 	},
 	tinkaton: {
 		inherit: true,
-		abilities: {0: "Mold Breaker", 1: "Own Tempo", H: "Sheer Force"},
+		abilities: {0: "Mold Breaker", 1: "Sheer Force", H: "Pickpocket"},
 	},
 	wiglett: {
 		inherit: true,
