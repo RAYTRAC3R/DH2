@@ -100245,6 +100245,7 @@ export const Learnsets: import('../sim/dex-species').LearnsetDataTable = {
             perishsong: ["9M"],
             batonpass: ["9M"],
             swordsdance: ["9M"],
+            behemothblade: ["9M"],
 		},
 	},
     tigerclaw: {
@@ -100315,6 +100316,7 @@ export const Learnsets: import('../sim/dex-species').LearnsetDataTable = {
             perishsong: ["9M"],
             batonpass: ["9M"],
             swordsdance: ["9M"],
+            behemothblade: ["9M"],
 		},
 	},
     tigerclawstar: {
@@ -100386,6 +100388,7 @@ export const Learnsets: import('../sim/dex-species').LearnsetDataTable = {
             perishsong: ["9M"],
             batonpass: ["9M"],
             swordsdance: ["9M"],
+            behemothblade: ["9M"],
 		},
 	},
 };
