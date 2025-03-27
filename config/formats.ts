@@ -4425,9 +4425,12 @@ export const Formats: FormatList = [
 	},
     {
 		name: "[Gen 9] Warrior Catmons",
+        desc: "Turning cats from the Warriors book series by Erin Hunter into playable mons!",
 		mod: 'warriorcatmons',
+        gen: 9,
 		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Species Clause', 'Terastal Clause', 'Sleep Clause Mod', 'Data Mod'],
-		banlist: ['ND AG'],
+		banlist: ['All Pokemon'],
+        unbanlist: ['Firepaw', 'Fireheart', 'Firestar', 'Graykit', 'Graypaw', 'Graystripe', 'Tigerclaw-Paw', 'Tigerclaw', 'Tigerclaw-Star', 'Bluepaw', 'Bluefur', 'Bluestar'],
 		teambuilderFormat: 'National Dex',
 	},
 	{
