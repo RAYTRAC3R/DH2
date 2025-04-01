@@ -6088,4 +6088,15 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		doublesTier: "DUber",
 		natDexTier: "Uber",
 	},
+    spottedkit: {
+		tier: "LC",
+	},
+    spottedpaw: {
+		tier: "NFE",
+	},
+    spottedleaf: {
+		tier: "OU",
+		doublesTier: "DOU",
+		natDexTier: "OU",
+	},
 };
