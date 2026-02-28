@@ -26,7 +26,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				baseDamage = this.battle.modify(baseDamage, bondModifier);
 			} else if (move.multihitType === 'younglion' && move.hit > 1) {
 				// Parental Bond modifier
-				const bondModifier = 0.5;
+				const bondModifier = 0.3;
 				this.battle.debug(`Young Lion modifier: ${bondModifier}`);
 				baseDamage = this.battle.modify(baseDamage, bondModifier);
 			}
@@ -125,5 +125,5 @@ export const Scripts: ModdedBattleScriptsData = {
 			// ...but 16-bit truncation happens even later, and can truncate to 0
 			return tr(baseDamage, 16);
 		}
-	}
+	},
 };

@@ -25,6 +25,73 @@ export const Scripts: ModdedBattleScriptsData = {
 			if (this.hasItem('Neutralizer') && totalTypeMod > 0) return 0;
 			return totalTypeMod;
 		},
+	formeChange(
+		speciesId: string | Species, source: Effect = this.battle.effect,
+		isPermanent?: boolean, message?: string
+	) {
+		const rawSpecies = this.battle.dex.species.get(speciesId);
+
+		const species = this.setSpecies(rawSpecies, source);
+		if (!species) return false;
+
+		if (this.battle.gen <= 2) return true;
+
+		// The species the opponent sees
+		const apparentSpecies =
+			this.illusion ? this.illusion.species.name : species.baseSpecies;
+		if (isPermanent) {
+			this.baseSpecies = rawSpecies;
+			this.details = species.name + (this.level === 100 ? '' : ', L' + this.level) +
+				(this.gender === '' ? '' : ', ' + this.gender) + (this.set.shiny ? ', shiny' : '');
+			this.battle.add('detailschange', this, (this.illusion || this).details);
+			if (source.effectType === 'Item') {
+				if (source.zMove) {
+					this.battle.add('-burst', this, apparentSpecies, species.requiredItem);
+					this.moveThisTurnResult = true; // Ultra Burst counts as an action for Truant
+				} else if (source.onPrimal) {
+					if (this.illusion) {
+						this.ability = '';
+						this.battle.add('-primal', this.illusion);
+					} else {
+						this.battle.add('-primal', this);
+					}
+				} else {
+					this.battle.add('-mega', this, apparentSpecies, species.requiredItem);
+					this.moveThisTurnResult = true; // Mega Evolution counts as an action for Truant
+				}
+			} else if (source.effectType === 'Status') {
+				// Shaymin-Sky -> Shaymin
+				this.battle.add('-formechange', this, species.name, message);
+			}
+		} else {
+			if (source.effectType === 'Ability') {
+				this.battle.add('-formechange', this, species.name, message, `[from] ability: ${source.name}`);
+			} else {
+				this.battle.add('-formechange', this, this.illusion ? this.illusion.species.name : species.name, message);
+			}
+		}
+		if (isPermanent && !['disguise', 'iceface'].includes(source.id)) {
+			if (this.illusion) {
+				this.ability = ''; // Don't allow Illusion to wear off
+			}
+			if (species.id.includes('mega')) {
+				//parallel mega orb's effect lies here
+				if (source.id === 'parallelmegaorb') return;
+				const base = this.battle.dex.species.get(species.baseSpecies);
+				if (species.abilities['H'] && this.ability === base.abilities['H'].replace(/\s/g, "").toLowerCase()) { //stupid ass function because apparently toID doesn't work
+					this.setAbility(species.abilities['H'], null, true);
+				} else if (species.abilities['1'] && this.ability === base.abilities['1'].replace(/\s/g, "").toLowerCase()) {
+					this.setAbility(species.abilities['0'], null, true);
+				} else {
+					this.setAbility(species.abilities['0'], null, true);
+				}
+			} else {
+				this.setAbility(species.abilities['0'], null, true);
+			}
+			this.baseAbility = this.ability;
+		}
+		return true;
+	}
 	},
 
 	actions: {
@@ -179,12 +246,34 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 			return item.megaStone;
 		},
+		runMegaEvo(pokemon: Pokemon) {
+			const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
+			if (!speciesid) return false;
+	
+			this.battle.runEvent('BeforeMega', pokemon);
+			
+			pokemon.formeChange(speciesid, pokemon.getItem(), true); 
+	
+			// Limit one mega evolution
+			const wasMega = pokemon.canMegaEvo;
+			for (const ally of pokemon.side.pokemon) {
+				if (wasMega) {
+					ally.canMegaEvo = null;
+				} else {
+					ally.canUltraBurst = null;
+				}
+			}
+	
+			this.battle.runEvent('AfterMega', pokemon);
+			return true;
+		},
 	},
 
 	init() {//Tera Blast
-		for (const id in this.dataCache.Pokedex) {
-			if (this.dataCache.Learnsets[id] && this.dataCache.Learnsets[id].learnset) {
-				const learnset = this.modData('Learnsets', this.toID(id)).learnset;
+    const noLearn = ['beldum', 'burmy', 'cascoon', 'caterpie', 'combee', 'cosmoem', 'cosmog', 'ditto', 'kakuna', 'kricketot', 'magikarp', 'metapod', 'pyukumuku', 'scatterbug', 
+      'silcoon', 'spewpa', 'tynamo', 'weedle', 'wobbuffet', 'wurmple', 'wynaut'];
+    	for (const id in this.dataCache.Pokedex) {
+			if (this.dataCache.Learnsets[id] && this.dataCache.Learnsets[id].learnset && !noLearn.includes(id)) {
 				this.modData('Learnsets', this.toID(id)).learnset.terablast = ["9M"];
 			}
 		}
@@ -2363,8 +2452,8 @@ export const Scripts: ModdedBattleScriptsData = {
 		this.modData('Learnsets', 'regieleki').learnset.paraboliccharge = ['9L1'];
 		this.modData('Learnsets', 'toxtricity').learnset.paraboliccharge = ['9L1'];
 		// Slate 9
-		this.modData('Learnsets', 'eevee').learnset.slackoff = ['9L1'];
-		this.modData('Learnsets', 'eevee').learnset.uturn = ['9L1'];
+		this.modData('Learnsets', 'vaporeon').learnset.slackoff = ['9L1'];
+		this.modData('Learnsets', 'vaporeon').learnset.uturn = ['9L1'];
 		this.modData('Learnsets', 'vaporeon').learnset.sludgebomb = ['9L1'];
 		this.modData('Learnsets', 'vaporeon').learnset.sludgewave = ['9L1'];
 		this.modData('Learnsets', 'vaporeon').learnset.toxicspikes = ['9L1'];
@@ -2372,6 +2461,8 @@ export const Scripts: ModdedBattleScriptsData = {
 		this.modData('Learnsets', 'vaporeon').learnset.virulentblast = ['9L1'];
 		this.modData('Learnsets', 'vaporeon').learnset.acidspray = ['9L1'];
 		this.modData('Learnsets', 'vaporeon').learnset.poisonfang = ['9L1'];
+		this.modData('Learnsets', 'jolteon').learnset.slackoff = ['9L1'];
+		this.modData('Learnsets', 'jolteon').learnset.uturn = ['9L1'];
 		this.modData('Learnsets', 'jolteon').learnset.nightslash = ['9L1'];
 		this.modData('Learnsets', 'jolteon').learnset.paraboliccharge = ['9L1'];
 		this.modData('Learnsets', 'jolteon').learnset.spikes = ['9L1'];
@@ -2381,8 +2472,12 @@ export const Scripts: ModdedBattleScriptsData = {
 		this.modData('Learnsets', 'jolteon').learnset.foulplay = ['9L1'];
 		this.modData('Learnsets', 'jolteon').learnset.switcheroo = ['9L1'];
 		this.modData('Learnsets', 'jolteon').learnset.snarl = ['9L1'];
+		this.modData('Learnsets', 'flareon').learnset.slackoff = ['9L1'];
+		this.modData('Learnsets', 'flareon').learnset.uturn = ['9L1'];
 		this.modData('Learnsets', 'flareon').learnset.firelash = ['9L1'];
 		this.modData('Learnsets', 'flareon').learnset.knockoff = ['9L1'];
+		this.modData('Learnsets', 'espeon').learnset.slackoff = ['9L1'];
+		this.modData('Learnsets', 'espeon').learnset.uturn = ['9L1'];
 		this.modData('Learnsets', 'espeon').learnset.luminacrash = ['9L1'];
 		this.modData('Learnsets', 'espeon').learnset.mysticalfire = ['9L1'];
 		this.modData('Learnsets', 'espeon').learnset.willowisp = ['9L1'];
@@ -2392,12 +2487,16 @@ export const Scripts: ModdedBattleScriptsData = {
 		this.modData('Learnsets', 'espeon').learnset.steelbeam = ['9L1'];
 		this.modData('Learnsets', 'espeon').learnset.caltrops = ['9L1'];
 		this.modData('Learnsets', 'espeon').learnset.irondefense = ['9L1'];
+		this.modData('Learnsets', 'leafeon').learnset.slackoff = ['9L1'];
+		this.modData('Learnsets', 'leafeon').learnset.uturn = ['9L1'];
 		this.modData('Learnsets', 'leafeon').learnset.sacredsword = ['9L1'];
 		this.modData('Learnsets', 'leafeon').learnset.bulkup = ['9L1'];
 		this.modData('Learnsets', 'leafeon').learnset.flexoff = ['9L1'];
 		this.modData('Learnsets', 'leafeon').learnset.closecombat = ['9L1'];
 		this.modData('Learnsets', 'leafeon').learnset.nightslash = ['9L1'];
 		this.modData('Learnsets', 'leafeon').learnset.strengthsap = ['9L1'];
+		this.modData('Learnsets', 'sylveon').learnset.slackoff = ['9L1'];
+		this.modData('Learnsets', 'sylveon').learnset.uturn = ['9L1'];
 		this.modData('Learnsets', 'sylveon').learnset.sonicboom = ['9L1'];
 		this.modData('Learnsets', 'sylveon').learnset.nastyplot = ['9L1'];
 		this.modData('Learnsets', 'sylveon').learnset.hex = ['9L1'];
@@ -2977,5 +3076,49 @@ export const Scripts: ModdedBattleScriptsData = {
 		this.modData('Learnsets', 'shuckle').learnset.syrupbomb = ['9M'];
 		this.modData('Learnsets', 'slurpuff').learnset.syrupbomb = ['9M'];
 		this.modData('Learnsets', 'toedscool').learnset.syrupbomb = ['9M'];
+		// april 29 2025
+		this.modData('Learnsets', 'sandyshocks').learnset.nastyplot = ['9M'];
+		this.modData('Learnsets', 'taurospaldeaaqua').learnset.swordsdance = ['9M'];
+		this.modData('Learnsets', 'taurospaldeablaze').learnset.swordsdance = ['9M'];
+		this.modData('Learnsets', 'taurospaldeacombat').learnset.swordsdance = ['9M'];
+		this.modData('Learnsets', 'ironboulder').learnset.accelerock = ['9M'];
+		this.modData('Learnsets', 'ironboulder').learnset.knockoff = ['9M'];
+		this.modData('Learnsets', 'ironboulder').learnset.supercellslam = ['9M'];
+		this.modData('Learnsets', 'ironboulder').learnset.voltswitch = ['9M'];
+		this.modData('Learnsets', 'ironthorns').learnset.shiftgear = ['9M'];
+		this.modData('Learnsets', 'ironthorns').learnset.icespinner = ['9M'];
+		this.modData('Learnsets', 'ironthorns').learnset.superpower = ['9M'];
+		this.modData('Learnsets', 'ironjugulis',).learnset.calmmind = ['9M'];
+		this.modData('Learnsets', 'genesect',).learnset.caltrops = ['9M'];
+		this.modData('Learnsets', 'genesect',).learnset.encore = ['9M'];
+		this.modData('Learnsets', 'obstagoon',).learnset.flexoff = ['9M'];
+		this.modData('Learnsets', 'bewear',).learnset.slackoff = ['9M'];
+		this.modData('Learnsets', 'regirock',).learnset.bulkup = ['9M'];
+		this.modData('Learnsets', 'registeel',).learnset.railgun = ['9M'];
+		this.modData('Learnsets', 'regieleki',).learnset.earthpower = ['9M'];
+		this.modData('Learnsets', 'regieleki',).learnset.grassknot = ['9M'];
+		this.modData('Learnsets', 'regidrago',).learnset.aurasphere = ['9M'];
+		this.modData('Learnsets', 'regidrago',).learnset.darkpulse = ['9M'];
+		this.modData('Learnsets', 'regidrago',).learnset.swordsdance = ['9M'];
+		this.modData('Learnsets', 'guzzlord',).learnset.swordsdance = ['9M'];
+		this.modData('Learnsets', 'guzzlord',).learnset.coil = ['9M'];
+		this.modData('Learnsets', 'guzzlord',).learnset.suckerpunch = ['9M'];
+		this.modData('Learnsets', 'larvitar',).learnset.pebblestorm = ['9M'];
+		this.modData('Learnsets', 'dracovish').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'greattusk').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'lycanrocdusk').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'lopunny').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'jangmoo').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'mawile').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'zarude').learnset.hyperfang = ['9M'];
+		this.modData('Learnsets', 'clodsire').learnset.poisonfang = ['9M'];
+		this.modData('Learnsets', 'slowpokegalar').learnset.poisonfang = ['9M'];
+		this.modData('Learnsets', 'umbreon').learnset.poisonfang = ['9M'];
+		this.modData('Learnsets', 'venipede').learnset.poisonfang = ['9M'];
+		this.modData('Learnsets', 'corviknight').learnset.railgun = ['9M'];
+		this.modData('Learnsets', 'heatran').learnset.railgun = ['9M'];
+		this.modData('Learnsets', 'meltan').learnset.railgun = ['9M'];
+		this.modData('Learnsets', 'melmetal').learnset.railgun = ['9M'];
+		this.modData('Learnsets', 'registeel').learnset.railgun = ['9M'];
 	}
 };
