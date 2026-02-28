@@ -4430,7 +4430,7 @@ export const Formats: FormatList = [
         gen: 9,
 		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Species Clause', 'Terastal Clause', 'Sleep Clause Mod', 'Data Mod'],
 		banlist: ['All Pokemon'],
-        unbanlist: ['Firepaw', 'Fireheart', 'Firestar', 'Graykit', 'Graypaw', 'Graystripe', 'Tigerclaw-Paw', 'Tigerclaw', 'Tigerclaw-Star', 'Bluepaw', 'Bluefur', 'Bluestar'],
+        unbanlist: ['Firepaw', 'Fireheart', 'Firestar', 'Graykit', 'Graypaw', 'Graystripe', 'Tigerclaw-Paw', 'Tigerclaw', 'Tigerclaw-Star', 'Bluepaw', 'Bluefur', 'Bluestar', 'Spottedkit', 'Spottedpaw', 'Spottedleaf'],
 		teambuilderFormat: 'National Dex Ubers',
 	},
 	{
